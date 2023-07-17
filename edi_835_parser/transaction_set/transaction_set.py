@@ -47,7 +47,9 @@ class TransactionSet:
 		data = []
 		for claim in self.claims:
 			for service in claim.services:
-
+			# add a loop for payer
+			# for payer in self.payer:
+				
 				datum = TransactionSet.serialize_service(
 					self.financial_information,
 					self.payer,
@@ -96,34 +98,36 @@ class TransactionSet:
 			end_date = claim.claim_statement_period_end.date
 
 		datum = {
-			'marker': claim.claim.marker,
-			'patient': claim.patient.name,
-			'code': service.service.code,
-			'modifier': service.service.modifier,
-			'qualifier': service.service.qualifier,
-			'allowed_units': service.service.allowed_units,
-			'billed_units': service.service.billed_units,
-			'transaction_date': financial_information.transaction_date,
-			'charge_amount': service.service.charge_amount,
-			'allowed_amount': service.allowed_amount,
-			'paid_amount': service.service.paid_amount,
-			'payer': payer.organization.name,
-			'start_date': start_date,
-			'end_date': end_date,
-			'rendering_provider': claim.rendering_provider.name if claim.rendering_provider else None,
+			'claim_marker': claim.claim.marker,
+			'claim_patient': claim.patient.name,
+			'service_code': service.service.code,
+			'service_modifier': service.service.modifier,
+			'service_qualifier': service.service.qualifier,
+			'service_allowed_units': service.service.allowed_units,
+			'service_billed_units': service.service.billed_units,
+			'financial_information_check_issue_or_eft_effective_date': financial_information.transaction_date,
+			'service_charge_amount': service.service.charge_amount,
+			'service_supplemental_allowed_amount': service.allowed_amount,
+			'service_paid_amount': service.service.paid_amount,
+			'payer_name': payer.organization.name,
+			'service_or_claim_start_date': start_date,
+			'service_or_claim_end_date': end_date,
+   			'service_date': service.service_date,
+			'claim_rendering_provider': claim.rendering_provider.name if claim.rendering_provider else None,
 		}
 
 		return datum
 
 	@classmethod
-	def build(cls, file_path: str) -> 'TransactionSet':
+	# def build(cls, file_path: str) -> 'TransactionSet':
+	def build(cls, file: str) -> 'TransactionSet':
 		interchange = None
 		financial_information = None
 		claims = []
 		organizations = []
 
-		with open(file_path) as f:
-			file = f.read()
+		# with open(file_path) as f:
+		# 	file = f.read()
 
 		segments = file.split('~')
 		segments = [segment.strip() for segment in segments]

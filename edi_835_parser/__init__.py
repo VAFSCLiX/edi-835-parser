@@ -30,6 +30,21 @@ def parse(path: str, debug: bool=False) -> TransactionSets:
 
 	return TransactionSets(transaction_sets)
 
+def parse_string_joined(file_string_list: list, debug: bool=False) -> TransactionSets:
+	transaction_sets = []
+	for file in file_string_list:
+		if debug:
+			transaction_set = TransactionSet.build(file)
+			transaction_sets.append(transaction_set)
+		else:
+			try:
+				transaction_set = TransactionSet.build(file)
+				transaction_sets.append(transaction_set)
+			except:
+				warn(f'Failed to build a transaction set from {file}')
+
+
+	return TransactionSets(transaction_sets)
 
 def _find_edi_835_files(path: str) -> List[str]:
 	files = []
